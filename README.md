@@ -43,7 +43,7 @@ origin  git@github.com:vprameshdevops-source/ansible-lab.git (fetch)
 origin  git@github.com:vprameshdevops-source/ansible-lab.git (push)
 
 ********************************************************************************************************* 
-This step would required to ensure vscode identifies right git repo and branch
+This step would required to ensure vscode identifies right git repo and branch.
 ********************************************************************************************************* 
 git push --set-upstream origin master
 
