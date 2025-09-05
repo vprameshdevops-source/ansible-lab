@@ -9,7 +9,7 @@ git config --global user.email "vpramesh.devops@gmail.com"
 git config --global user.name "vprameshdevops-source"
 
 ********************************************************************************************************* 
-in case of first time you have to add the public key into git settings -> SSH Key -> Add Key
+in case of first time you have to add the public key into git settings -> SSH Key -> Add Key.
 *********************************************************************************************************
 cat ~/.ssh/id_rsa.pub
 
