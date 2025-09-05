@@ -1,0 +1,33 @@
+services:
+  control:
+    build: ./control
+    container_name: ansible-control
+    volumes:
+      - ./playbook:/ansible/playbook
+      - ./scripts:/ansible/scripts
+      - ./inventory.ini:/ansible/inventory.ini
+      - ./control/ssh:/root/.ssh
+    networks:
+      - ansible-net
+    tty: true
+
+  node1:
+    build: ./node
+    container_name: node1
+    networks:
+      - ansible-net
+
+  node2:
+    build: ./node
+    container_name: node2
+    networks:
+      - ansible-net
+
+  node3:
+    build: ./node
+    container_name: node3
+    networks:
+      - ansible-net
+
+networks:
+  ansible-net:
