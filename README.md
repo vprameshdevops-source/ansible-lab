@@ -53,6 +53,14 @@ git commit -m 'commiting the code'
 
 git push -u origin master
 
+only on worst case force to push it --> git push -f origin master
+
+else: 
+git pull origin master
+git add *
+git commit -m "commit"
+git push -u origin master
+
 ********************************************************************************************************* 
 How to download ubuntu os:
 ********************************************************************************************************* 
