@@ -100,6 +100,8 @@ ssh root@node3
 
 docker compose -f 'docker-compose.yml' up -d --build 'control'
 
+docker exec -it ansible-control bash
+
 ansible -i inventory.ini all -m ping
 
 ansible-playbook -i inventory.ini playbook/playbook.yml

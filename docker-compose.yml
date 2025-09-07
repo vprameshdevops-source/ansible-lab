@@ -4,10 +4,9 @@ services:
     container_name: ansible-control
     volumes:
       - ./playbook:/ansible/playbook
-      - ./scripts:/ansible/scripts
       - ./inventory.ini:/ansible/inventory.ini
-      #- ./control/ssh:/root/.ssh
       - ./ansible.cfg:/ansible/ansible.cfg   # 👈 mount ansible.cfg
+      - ssh-volume:/control/ssh  # 👈 Shared volume
     networks:
       - ansible-net
     tty: true
@@ -22,6 +21,9 @@ services:
   node1:
     build: ./node
     container_name: node1
+    volumes:
+      #- ./control/ssh/authorized_keys:/root/.ssh/authorized_keys:ro
+      - ssh-volume:/root/.ssh:ro
     networks:
       - ansible-net
     healthcheck:
@@ -32,6 +34,9 @@ services:
   node2:
     build: ./node
     container_name: node2
+    volumes:
+      #- ./control/ssh/authorized_keys:/root/.ssh/authorized_keys:ro
+      - ssh-volume:/root/.ssh:ro
     networks:
       - ansible-net
     healthcheck:
@@ -42,12 +47,18 @@ services:
   node3:
     build: ./node
     container_name: node3
+    volumes:
+      #- ./control/ssh/authorized_keys:/root/.ssh/authorized_keys:ro
+      - ssh-volume:/root/.ssh:ro
     networks:
       - ansible-net
     healthcheck:
       test: ["CMD", "pgrep", "sshd"]
       interval: 5s
       retries: 10
+
+volumes:
+  ssh-volume:
 
 networks:
   ansible-net:
