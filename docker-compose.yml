@@ -1,0 +1,53 @@
+services:
+  control:
+    build: ./control
+    container_name: ansible-control
+    volumes:
+      - ./playbook:/ansible/playbook
+      - ./scripts:/ansible/scripts
+      - ./inventory.ini:/ansible/inventory.ini
+      #- ./control/ssh:/root/.ssh
+      - ./ansible.cfg:/ansible/ansible.cfg   # 👈 mount ansible.cfg
+    networks:
+      - ansible-net
+    tty: true
+    depends_on:
+      node1:
+        condition: service_healthy
+      node2:
+        condition: service_healthy
+      node3:
+        condition: service_healthy
+
+  node1:
+    build: ./node
+    container_name: node1
+    networks:
+      - ansible-net
+    healthcheck:
+      test: ["CMD", "pgrep", "sshd"]
+      interval: 5s
+      retries: 10
+
+  node2:
+    build: ./node
+    container_name: node2
+    networks:
+      - ansible-net
+    healthcheck:
+      test: ["CMD", "pgrep", "sshd"]
+      interval: 5s
+      retries: 10
+
+  node3:
+    build: ./node
+    container_name: node3
+    networks:
+      - ansible-net
+    healthcheck:
+      test: ["CMD", "pgrep", "sshd"]
+      interval: 5s
+      retries: 10
+
+networks:
+  ansible-net:

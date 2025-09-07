@@ -1,0 +1,36 @@
+---
+- name: Setup Apache on all nodes
+  hosts: myhosts
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: Ensure Apache2 is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+- name: Run Python server check script
+  hosts: myhosts
+  tasks:
+    - name: Copy check_status.py to node
+      copy:
+        src:  check_status.py
+        dest: /tmp/check_status.py
+        mode: '0755'
+
+    - name: Execute check_status.py
+      command: python3 /tmp/check_status.py
+      register: result
+
+    - name: Show script output
+      debug:
+        msg: "{{ result.stdout }}"
