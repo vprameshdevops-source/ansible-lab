@@ -10,12 +10,6 @@ RUN apt-get update && \
 
 WORKDIR /ansible
 
-# Generate SSH keypair at build time (no passphrase)
-#RUN [ -f /root/.ssh/id_rsa ] || ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N ""
-
-# Copy public key into a shared file for nodes to consume
-#RUN cp /root/.ssh/id_rsa.pub /ansible/authorized_keys
-
 # Copy bootstrap script into image
 COPY bootstrap.sh /usr/local/bin/bootstrap.sh
 RUN chmod +x /usr/local/bin/bootstrap.sh

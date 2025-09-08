@@ -3,9 +3,10 @@ services:
     build: ./control
     container_name: ansible-control
     volumes:
-      - ${WORKSPACE}/playbook:/ansible/playbook
-      - ${WORKSPACE}/inventory.ini:/ansible/inventory.ini:ro
-      - ${WORKSPACE}/ansible.cfg:/ansible/ansible.cfg:ro
+      #- ${WORKSPACE}/playbook:/ansible/playbook
+      #- ${WORKSPACE}/inventory.ini:/ansible/inventory.ini:ro
+      #- ${WORKSPACE}/ansible.cfg:/ansible/ansible.cfg:ro
+      - .:/ansible:ro
       - ssh-volume:/control/ssh  # 👈 Shared volume
     networks:
       - ansible-net
