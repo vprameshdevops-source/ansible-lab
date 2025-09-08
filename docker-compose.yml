@@ -4,8 +4,8 @@ services:
     container_name: ansible-control
     volumes:
       - ./playbook:/ansible/playbook
-      - ./inventory.ini:/ansible/inventory.ini
-      - ./ansible.cfg:/ansible/ansible.cfg   # 👈 mount ansible.cfg
+      - ./inventory.ini:/ansible/inventory.ini:ro
+      - ./ansible.cfg:/ansible/ansible.cfg:ro   # 👈 mount ansible.cfg
       - ssh-volume:/control/ssh  # 👈 Shared volume
     networks:
       - ansible-net
