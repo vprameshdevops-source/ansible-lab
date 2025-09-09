@@ -16,7 +16,7 @@ services:
       #- ssh-volume:/control/ssh  # 👈 Shared volume
     environment:
       WORKSPACE: ${HOST_WORKSPACE}   # ✅ This is the correct YAML syntax
-    #command: "sh -c 'echo \"👀 WORKSPACE inside container: $HOST_WORKSPACE\" && sleep 600'"
+      #command: "sh -c 'echo \"👀 WORKSPACE inside container: $HOST_WORKSPACE\" && sleep 600'"
     networks:
       - ansible-net
     tty: true

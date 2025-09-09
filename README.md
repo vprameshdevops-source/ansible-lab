@@ -44,3 +44,10 @@ docker exec -it ansible-control bash
 ansible -i inventory.ini all -m ping
 
 ansible-playbook -i inventory.ini playbook/playbook.yml
+
+docker exec ansible-control ansible -i inventory.ini all -m ping
+
+docker exec ansible-control ansible-playbook -i inventory.ini playbook/playbook.yml
+
+docker exec ansible-control ansible-playbook -i /ansible/inventory.ini /ansible/playbook/playbook.yml --tags dev
+docker exec ansible-control ansible-playbook -i /ansible/inventory.ini /ansible/playbook/playbook.yml --tags uat

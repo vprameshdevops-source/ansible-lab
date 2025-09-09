@@ -1,6 +1,7 @@
 ---
 - name: Run Python server check script
-  hosts: myhosts
+  hosts: all   # run against whatever group is selected with -l
+
   tasks:
     - name: Copy check_status.py to node
       copy:
