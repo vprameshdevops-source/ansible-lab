@@ -37,6 +37,8 @@ ssh root@node3
 
 docker compose -f 'docker-compose.yml' up -d --build 'control'
 
+docker compose  --env-file .env -f 'docker-compose.yml' up -d --build
+
 docker exec -it ansible-control bash
 
 ansible -i inventory.ini all -m ping
