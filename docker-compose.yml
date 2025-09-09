@@ -3,11 +3,20 @@ services:
     build: ./control
     container_name: ansible-control
     volumes:
-      #- ${WORKSPACE}/playbook:/ansible/playbook
-      #- ${WORKSPACE}/inventory.ini:/ansible/inventory.ini:ro
-      #- ${WORKSPACE}/ansible.cfg:/ansible/ansible.cfg:ro
-      - .:/ansible:ro
+      - ${HOST_WORKSPACE}/playbook:/ansible/playbook
+      - ${HOST_WORKSPACE}/inventory.ini:/ansible/inventory.ini:ro
+      - ${HOST_WORKSPACE}/ansible.cfg:/ansible/ansible.cfg:ro
+      #- .:/ansible:ro
       - ssh-volume:/control/ssh  # 👈 Shared volume
+    #volumes:
+      #- /mnt/d/study/source/ansible-lab/jenkins/jenkins_home/workspace/ansible/playbook:/ansible/playbook
+      #- /mnt/d/study/source/ansible-lab/jenkins/jenkins_home/workspace/ansible/inventory.ini:/ansible/inventory.ini:ro
+      #- /mnt/d/study/source/ansible-lab/jenkins/jenkins_home/workspace/ansible/ansible.cfg:/ansible/ansible.cfg:ro
+      #- .:/ansible:ro
+      #- ssh-volume:/control/ssh  # 👈 Shared volume
+    environment:
+      WORKSPACE: ${HOST_WORKSPACE}   # ✅ This is the correct YAML syntax
+    #command: "sh -c 'echo \"👀 WORKSPACE inside container: $HOST_WORKSPACE\" && sleep 600'"
     networks:
       - ansible-net
     tty: true
