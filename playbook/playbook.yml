@@ -16,3 +16,36 @@
     - name: Show script output
       debug:
         msg: "{{ result.stdout }}"
+
+    - name: Copy system_api.py to node
+      copy:
+        src: system_api.py
+        dest: /tmp/system_api.py
+        mode: '0755'
+
+    - name: Ensure Flask dependencies installed
+      pip:
+        name:
+          - flask
+          - psutil
+        executable: pip3
+
+    - name: Run Flask API in background
+      shell: "nohup python3 /tmp/system_api.py > /tmp/system_api.log 2>&1 &"
+      async: 0
+      poll: 0
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: Ensure Apache2 is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes

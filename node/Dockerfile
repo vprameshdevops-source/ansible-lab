@@ -11,7 +11,10 @@ RUN apt-get update && \
     sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
     rm -rf /var/lib/apt/lists/*
 
-RUN service ssh start
+RUN service ssh start 
+
+# Install Python dependencies for your Flask app
+RUN pip3 install flask psutil
 
 WORKDIR /root
 

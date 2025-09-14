@@ -31,6 +31,11 @@ services:
   node1:
     build: ./node
     container_name: node1
+    ports:
+      - "5001:5001"   # expose Flask API for Dev
+    environment:
+      - APP_ENV=dev  
+      - PYTHONUNBUFFERED=1
     volumes:
       #- ./control/ssh/authorized_keys:/root/.ssh/authorized_keys:ro
       - ssh-volume:/root/.ssh:ro
@@ -44,6 +49,10 @@ services:
   node2:
     build: ./node
     container_name: node2
+    ports:
+      - "5002:5001"   # expose Flask API for uat
+    environment:
+      - APP_ENV=uat  
     volumes:
       #- ./control/ssh/authorized_keys:/root/.ssh/authorized_keys:ro
       - ssh-volume:/root/.ssh:ro
@@ -57,6 +66,10 @@ services:
   node3:
     build: ./node
     container_name: node3
+    ports:
+      - "5003:5001"   # expose Flask API for prod
+    environment:
+      - APP_ENV=prod  
     volumes:
       #- ./control/ssh/authorized_keys:/root/.ssh/authorized_keys:ro
       - ssh-volume:/root/.ssh:ro
