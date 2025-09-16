@@ -35,6 +35,13 @@ ssh root@node3
 
 *********************************************************************************************************
 
+sudo apt install 
+sudo apt install python3-venv
+python3 -m venv myenv
+source myenv/bin/activate
+
+*********************************************************************************************************
+
 docker compose -f 'docker-compose.yml' up -d --build 'control'
 
 docker compose  --env-file .env -f 'docker-compose.yml' up -d --build
@@ -51,3 +58,5 @@ docker exec ansible-control ansible-playbook -i inventory.ini playbook/playbook.
 
 docker exec ansible-control ansible-playbook -i /ansible/inventory.ini /ansible/playbook/playbook.yml --tags dev
 docker exec ansible-control ansible-playbook -i /ansible/inventory.ini /ansible/playbook/playbook.yml --tags uat
+
+docker exec ansible-control ansible-playbook -i /ansible/inventory.ini /ansible/playbook/playbook.yml -l uat

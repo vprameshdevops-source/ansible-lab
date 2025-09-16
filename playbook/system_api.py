@@ -6,19 +6,21 @@ import subprocess
 import json
 from datetime import datetime
 import psutil
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string,render_template
 import logging
 logging.basicConfig(level=logging.INFO)
-print("APP_ENV =", os.environ.get("APP_ENV"))
+import requests
+import yfinance as yf
+import plotly.graph_objs as go
+import plotly.io as pio
 
-app = Flask(__name__)
+#app = Flask(__name__, template_folder='/tmp/templates')
 
 def run_cmd(cmd):
     try:
         return subprocess.check_output(cmd, shell=True, text=True).strip()
     except subprocess.CalledProcessError:
         return "Not Running"
-
 
 def get_system_status():
     data = {}
@@ -65,9 +67,11 @@ def get_system_status():
     return data
 
 
+app = Flask(__name__, template_folder='/tmp/templates')
+
 @app.route("/")
 def html_status():
-    env = os.environ.get("APP_ENV", "unknown").upper()
+    env = 'TST'
     logging.info(f"Rendering status page for {env} environment...")
     data = get_system_status()
     return render_template_string("""
@@ -128,7 +132,117 @@ def html_status():
     </html>
     """, data=data, env=env)
 
+GROUPED_TICKERS = {
+    "Commodity": {
+        "GC=F": "Gold Futures",
+        "SI=F": "Silver Futures",
+        "ALI=F": "Aluminium Futures",
+    },
+    "Oil": {
+        "CL=F": "Crude Oil Futures",
+    },
+    "Crypto": {
+        "BTC-USD": "Bitcoin",
+        "ETH-USD": "Ethereum",
+        "ADA-USD": "Cardano",
+    },
+    "Banks": {
+        "JPM": "JP Morgan",
+        "BAC": "Bank of America",
+        "WFC": "Wells Fargo",
+    },
+    "Technology": {
+        "AAPL": "Apple",
+        "TSLA": "Tesla",
+        "GOOGL": "Google",
+        "MSFT": "Microsoft",
+        "AMZN": "Amazon",
+    }
+}
 
+@app.route("/myapp")
+def multi_stock_charts():
+    grouped_data = {}
+
+    for category, tickers in GROUPED_TICKERS.items():
+        stocks = []
+        for symbol, name in tickers.items():
+            try:
+                ticker = yf.Ticker(symbol)
+                hist = ticker.history(period="1y")
+                if hist.empty:
+                    continue
+
+                chart = go.Figure()
+                chart.add_trace(go.Scatter(
+                    x=hist.index,
+                    y=hist["Close"],
+                    mode='lines',
+                    name=symbol,
+                    line=dict(color='Blue')
+                ))
+                chart.update_layout(
+                    title=f"{name} ({symbol}) - Last 365 Days",
+                    xaxis_title="Date",
+                    yaxis_title="Price (USD)",
+                    template="plotly_white",
+                    height=400
+                )
+                chart_html = pio.to_html(chart, full_html=False)
+                stocks.append({
+                    "symbol": symbol,
+                    "name": name,
+                    "price": round(hist["Close"].iloc[-1], 2),
+                    "chart": chart_html
+                })
+            except Exception as e:
+                print(f"Error loading {symbol}: {e}")
+
+        grouped_data[category] = stocks
+
+    return render_template("stocks.html", grouped_data=grouped_data)
+
+'''
+@app.route('/myapp')
+def multi_stock_charts():
+    stock_data = []
+
+    for symbol, name in TICKERS.items():
+        try:
+            ticker = yf.Ticker(symbol)
+            hist = ticker.history(period="365d", interval="1d")
+            price = hist["Close"].iloc[-1]
+
+            # Generate Plotly chart for each stock
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=hist.index, y=hist["Close"], mode='lines', name=symbol, line=dict(color='Blue')))
+            fig.update_layout(
+                title=f"{name} ({symbol}) - Last 365 Days",
+                xaxis_title="Time",
+                yaxis_title="Price (USD)",
+                template="plotly_white",
+                height=400
+            )
+
+            chart_html = pio.to_html(fig, full_html=False)
+
+            stock_data.append({
+                "symbol": symbol,
+                "name": name,
+                "price": f"{price:.2f}",
+                "chart": chart_html
+            })
+
+        except Exception as e:
+            stock_data.append({
+                "symbol": symbol,
+                "name": name,
+                "price": "Error",
+                "chart": f"<p>Error fetching data for {symbol}: {e}</p>"
+            })
+
+    return render_template("stocks.html", stock_data=stock_data)
+'''
 if __name__ == "__main__":
     logging.info("Starting Flask app...")
     app.run(host="0.0.0.0", port=5001, debug=True)

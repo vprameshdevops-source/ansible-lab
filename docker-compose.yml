@@ -8,15 +8,8 @@ services:
       - ${HOST_WORKSPACE}/ansible.cfg:/ansible/ansible.cfg:ro
       #- .:/ansible:ro
       - ssh-volume:/control/ssh  # 👈 Shared volume
-    #volumes:
-      #- /mnt/d/study/source/ansible-lab/jenkins/jenkins_home/workspace/ansible/playbook:/ansible/playbook
-      #- /mnt/d/study/source/ansible-lab/jenkins/jenkins_home/workspace/ansible/inventory.ini:/ansible/inventory.ini:ro
-      #- /mnt/d/study/source/ansible-lab/jenkins/jenkins_home/workspace/ansible/ansible.cfg:/ansible/ansible.cfg:ro
-      #- .:/ansible:ro
-      #- ssh-volume:/control/ssh  # 👈 Shared volume
     environment:
       WORKSPACE: ${HOST_WORKSPACE}   # ✅ This is the correct YAML syntax
-      #command: "sh -c 'echo \"👀 WORKSPACE inside container: $HOST_WORKSPACE\" && sleep 600'"
     networks:
       - ansible-net
     tty: true
@@ -34,7 +27,7 @@ services:
     ports:
       - "5001:5001"   # expose Flask API for Dev
     environment:
-      - APP_ENV=dev  
+      - APP_ENV="DEV"  
       - PYTHONUNBUFFERED=1
     volumes:
       #- ./control/ssh/authorized_keys:/root/.ssh/authorized_keys:ro
@@ -52,7 +45,7 @@ services:
     ports:
       - "5002:5001"   # expose Flask API for uat
     environment:
-      - APP_ENV=uat  
+      - APP_ENV="UAT"  
     volumes:
       #- ./control/ssh/authorized_keys:/root/.ssh/authorized_keys:ro
       - ssh-volume:/root/.ssh:ro
@@ -69,7 +62,7 @@ services:
     ports:
       - "5003:5001"   # expose Flask API for prod
     environment:
-      - APP_ENV=prod  
+      - APP_ENV="PROD"  
     volumes:
       #- ./control/ssh/authorized_keys:/root/.ssh/authorized_keys:ro
       - ssh-volume:/root/.ssh:ro

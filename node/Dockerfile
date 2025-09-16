@@ -14,7 +14,7 @@ RUN apt-get update && \
 RUN service ssh start 
 
 # Install Python dependencies for your Flask app
-RUN pip3 install flask psutil
+RUN pip3 install flask psutil requests yfinance plotly
 
 WORKDIR /root
 
